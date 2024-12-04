@@ -80,5 +80,3 @@ RUN echo 'alias run="python3 $GITPOD_REPO_ROOT/manage.py runserver 0.0.0.0:8000"
 # Local environment variables
 ENV PORT="8080"
 ENV IP="0.0.0.0"
-
-
