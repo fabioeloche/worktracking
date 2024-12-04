@@ -1,16 +1,34 @@
-<body>
-    <button onclick="window.location.reload()">Run Program</button>
-    <div id="terminal"></div>
+<body style="margin: 0; display: flex; flex-direction: column; align-items: start; justify-content: center; height: 100vh;">
+    <button onclick="window.location.reload()" style="margin-bottom: 10px; padding: 5px 15px;">Run Program</button>
+    <div id="terminal" style="width: 100%; height: 80%; border: 1px solid #ccc; overflow: auto;"></div>
 
     <script>
+        // Create a function to resize the terminal dynamically
+        function resizeTerminal(term) {
+            const terminalContainer = document.getElementById('terminal');
+            const cols = Math.floor(terminalContainer.offsetWidth / 9); // Approximate width per character
+            const rows = Math.floor(terminalContainer.offsetHeight / 18); // Approximate height per character
+            term.resize(cols, rows);
+        }
+
+        // Initialize the terminal
         var term = new Terminal({
-            cols: 80,
-            rows: 24
+            scrollback: 1000, // Enable scrollback buffer
+            convertEol: true, // Enable line wrapping for long lines
         });
+
+        // Open the terminal in the #terminal div
         term.open(document.getElementById('terminal'));
         term.writeln('Running startup command: python3 run.py');
-        term.writeln('');
+        term.writeln(''); // Add an empty line for spacing
 
+        // Resize the terminal to fit within the container
+        resizeTerminal(term);
+
+        // Adjust terminal size on window resize
+        window.addEventListener('resize', () => resizeTerminal(term));
+
+        // Establish WebSocket connection
         var ws = new WebSocket(location.protocol.replace('http', 'ws') + '//' + location.hostname + (location.port ? (
             ':' + location.port) : '') + '/');
 
@@ -21,6 +39,7 @@
         ws.onerror = function (e) {
             console.log(e);
         };
+
         // Set focus in the terminal
         document.getElementsByClassName("xterm-helper-textarea")[0].focus();
     </script>
